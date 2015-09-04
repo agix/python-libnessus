@@ -20,9 +20,17 @@ class NessusReportHost(object):
         if len(_missing_attr) == 0:
             self.__host_properties = host_properties
         else:
-            raise Exception("Not all the attributes to create a decent "
-                            "NessusReportHost are available. "
-                            "Missing: ".format(" ".join(_missing_attr)))
+            if 'HOST_END' in _missing_attr or 'host-ip' in _missing_attr:
+                if 'host-ip' in _missing_attr:
+                    host_properties['host-ip'] = host_properties['name']
+                else:
+                    host_properties['HOST_END'] = host_properties['HOST_START']
+                self.__host_properties = host_properties
+            else:
+                missing_str = " ".join(_missing_attr)
+                raise Exception("Not all the attributes to create a decent "
+                                "NessusReportHost are available. "
+                                "Missing: "+missing_str)
 
         self.__report_items = report_items
 
